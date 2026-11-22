@@ -23,4 +23,4 @@ A custom 5-block Convolutional Neural Network (CNN) with Residual (Skip) connect
 Install the required libraries:
 ```bash
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-pip install matplotlib seaborn scikit-learn tqdm
+pip install seaborn scikit-learn tqdm
