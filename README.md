@@ -5,6 +5,9 @@ This project is a Deep Learning model that analyzes images of household waste (G
 ## 🚀 About The Project
 A custom 5-block Convolutional Neural Network (CNN) with Residual (Skip) connections was designed from scratch and trained using PyTorch. The training pipeline was migrated from Windows to a Linux (Ubuntu) environment, utilizing CUDA optimizations on an RTX 4050 to reduce training time from 5 hours to just 30 minutes.
 
+### 📥 Download Pre-trained Weights
+You can download the pre-trained model weights (`Recycle2.pth`) directly from the [Releases page](https://github.com/Lloyd48/Recycle/releases/tag/v1.0.0).
+
 ## 📊 Model Results
 *   **Test Accuracy:** 95.56%
 *   **Test Loss:** 0.1396
