@@ -64,24 +64,20 @@ if __name__ == "__main__":
     optimizer = optim.Adam(model.parameters(),lr=0.001)
     scheduler = optim.lr_scheduler.StepLR(optimizer,step_size=10,gamma=0.5)
     loss_calculate = nn.CrossEntropyLoss()
-    def test(model,test_loader,optim,loss_calculate,device):
-        model.eval() # Test moduna al (Dropout'u kapatır)
+    def test(model,test_loader,loss_calculate,device):
+        model.eval()
         correct = 0
         total = 0
         test_loss = 0
         with torch.no_grad():
             for image, label in test_loader:
-                    all_preds = []
-                    all_labels = []
                     image, label = image.to(device), label.to(device)
-                    all_labels.append(label)
                     outputs = model(image)
                     loss = loss_calculate(outputs, label)
                     test_loss += loss.item()
                     _, predicted = torch.max(outputs, 1)
-                    all_preds.append(predicted)
                     total += label.size(0)
                     correct += (predicted == label).sum().item()
             print(f"Test Loss: {test_loss/len(test_loader):.4f}")
             print(f"Test Accuracy: {100 * correct / total:.2f}%")
-    test(model,test_loader,optim,loss_calculate,device)
+    test(model,test_loader,loss_calculate,device)
