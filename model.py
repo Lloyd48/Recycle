@@ -16,13 +16,7 @@ if __name__ == "__main__":
         train_transform = transforms.Compose([transforms.Resize((224,224)),transforms.ToTensor(),transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5))])
         train_data = torchvision.datasets.ImageFolder(root="Datasets/train",transform=train_transform)
         train_loader = torch.utils.data.DataLoader(train_data,batch_size=32,num_workers=8,shuffle=True,pin_memory=True)
-        test_transform = transforms.Compose([
-                transforms.Resize((224,224)),
-                transforms.ToTensor(),
-                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-            ])
-        test_data = torchvision.datasets.ImageFolder(root="Datasets/test", transform=test_transform)
-        test_loader = torch.utils.data.DataLoader(test_data, batch_size=32, shuffle=False)
+        
         return train_loader,test_loader,test_data,train_data
     train_loader,test_loader,test_data,train_data = get_data()
     class Recycle(nn.Module):
@@ -77,41 +71,20 @@ if __name__ == "__main__":
     scheduler = optim.lr_scheduler.StepLR(optimizer,step_size=10,gamma=0.5)
     loss_calculate = nn.CrossEntropyLoss()
     def train(model,train_loader,optimizer,loss_calculate,device,epochs=1):
-         model.train()
-         for epoch in range(epochs):
-             total_loss = 0
-             for image,label in train_loader:
-                 image,label = image.to(device),label.to(device)
-                 guess = model(image)
-                 loss = loss_calculate(guess,label)
-                 optimizer.zero_grad()
-                 total_loss+=loss.item()
-                 loss.backward()
-                 optimizer.step()
-             scheduler.step()
-             print(f"Epoch: {epoch+1} Loss {total_loss/len(train_loader)}")    
-         print("MOdel Eğitildi")
+        model.train()
+        for epoch in range(epochs):
+            total_loss = 0
+            for image,label in train_loader:
+                image,label = image.to(device),label.to(device)
+                guess = model(image)
+                loss = loss_calculate(guess,label)
+                optimizer.zero_grad()
+                total_loss+=loss.item()
+                loss.backward()
+                optimizer.step()
+            scheduler.step()
+            print(f"Epoch: {epoch+1} Loss {total_loss/len(train_loader)}")    
+        print("MOdel Eğitildi")
     
     train(model,train_loader,optimizer,loss_calculate,device,epochs=30)
-    torch.save(model.state_dict(),"Recycle2.pth")
-    model.eval()
-    correct = 0
-    total = 0
-    test_loss = 0
-
-    with torch.no_grad():
-        for image, label in test_loader:
-            all_preds = []
-            all_labels = []
-            image, label = image.to(device), label.to(device)
-            all_labels.append(label)
-            outputs = model(image)
-            loss = loss_calculate(outputs, label)
-            test_loss += loss.item()
-            _, predicted = torch.max(outputs, 1)
-            all_preds.append(predicted)
-            total += label.size(0)
-            correct += (predicted == label).sum().item()
-
-    print(f"Test Loss: {test_loss/len(test_loader):.4f}")
-    print(f"Test Accuracy: {100 * correct / total:.2f}%")
+    torch.save(model.state_dict(),"Recycle2.pth")    
