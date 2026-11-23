@@ -76,35 +76,30 @@ if __name__ == "__main__":
     optimizer = optim.Adam(model.parameters(),lr=0.001)
     scheduler = optim.lr_scheduler.StepLR(optimizer,step_size=10,gamma=0.5)
     loss_calculate = nn.CrossEntropyLoss()
-    # def train(model,train_loader,optimizer,loss_calculate,device,epochs=1):
-    #     model.train()
-    #     for epoch in range(epochs):
-    #         total_loss = 0
-    #         for image,label in train_loader:
-    #             image,label = image.to(device),label.to(device)
-    #             guess = model(image)
-    #             loss = loss_calculate(guess,label)
-    #             optimizer.zero_grad()
-    #             total_loss+=loss.item()
-    #             loss.backward()
-    #             optimizer.step()
-    #         scheduler.step()
-    #         print(f"Epoch: {epoch+1} Loss {total_loss/len(train_loader)}")    
-    #     print("MOdel Eğitildi")
+    def train(model,train_loader,optimizer,loss_calculate,device,epochs=1):
+         model.train()
+         for epoch in range(epochs):
+             total_loss = 0
+             for image,label in train_loader:
+                 image,label = image.to(device),label.to(device)
+                 guess = model(image)
+                 loss = loss_calculate(guess,label)
+                 optimizer.zero_grad()
+                 total_loss+=loss.item()
+                 loss.backward()
+                 optimizer.step()
+             scheduler.step()
+             print(f"Epoch: {epoch+1} Loss {total_loss/len(train_loader)}")    
+         print("MOdel Eğitildi")
     
-    # train(model,train_loader,optimizer,loss_calculate,device,epochs=30)
-    # torch.save(model.state_dict(),"Recycle2.pth")
-        # Eğitim bittikten sonra:
-    model.eval() # Test moduna al (Dropout'u kapatır)
+    train(model,train_loader,optimizer,loss_calculate,device,epochs=30)
+    torch.save(model.state_dict(),"Recycle2.pth")
+    model.eval()
     correct = 0
     total = 0
     test_loss = 0
-    
-    # Test verilerini yüklemek için ayrı bir loader oluşturmalısın
-    # (Eğer Datasets/test klasörün varsa)
-    
 
-    with torch.no_grad(): # Testte gradyan hesaplamaya gerek yok
+    with torch.no_grad():
         for image, label in test_loader:
             all_preds = []
             all_labels = []
@@ -113,8 +108,6 @@ if __name__ == "__main__":
             outputs = model(image)
             loss = loss_calculate(outputs, label)
             test_loss += loss.item()
-            
-            # En yüksek olasılıklı sınıfı bul
             _, predicted = torch.max(outputs, 1)
             all_preds.append(predicted)
             total += label.size(0)
